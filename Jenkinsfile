@@ -2,12 +2,13 @@ pipeline {
     agent any
 
     tools {
-        sonarScanner 'sonar-scanner'
+        sonarRunner 'sonar-scanner'
     }
 
     stages {
         stage('Checkout') {
             steps {
+                checkout scm
                 echo 'Repositorio conectado'
             }
         }
@@ -15,9 +16,9 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('sonar-local') {
-                    sh '''
-                    sonar-scanner \
-                    -Dsonar.projectKey=otransfer-frontend \
+                    bat '''
+                    sonar-scanner ^
+                    -Dsonar.projectKey=otransfer-frontend ^
                     -Dsonar.sources=.
                     '''
                 }
