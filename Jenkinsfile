@@ -32,5 +32,16 @@ pipeline {
                 }
             }
         }
+
+        stage('Selenium Tests') {
+            steps {
+                sh '''
+                cd tests/selenium
+                python3 -m pip install --upgrade pip
+                pip3 install -r requirements.txt
+                pytest -v
+                '''
+            }
+        }
     }
 }
