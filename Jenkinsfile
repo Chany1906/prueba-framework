@@ -43,7 +43,7 @@ pipeline {
                 pip install --upgrade pip
                 pip install -r requirements.txt
                 pip install allure-pytest
-                pytest --alluredir=allure-results
+                pytest --alluredir=allure-results --junitxml=pytest-results.xml
                 '''
             }
         }
@@ -55,6 +55,31 @@ pipeline {
                     includeProperties: false,
                     results: [[path: 'tests/selenium/allure-results']]
                 ])
+            }
+        }
+
+        stage('Import Results to Xray') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'xray-creds',
+                    usernameVariable: 'XRAY_CLIENT_ID',
+                    passwordVariable: 'XRAY_CLIENT_SECRET'
+                )]) {
+                    sh '''
+                    cd tests/selenium
+
+                    XRAY_TOKEN=$(curl -s -X POST \
+                    -H "Content-Type: application/json" \
+                    -d "{\\"client_id\\": \\"$XRAY_CLIENT_ID\\", \\"client_secret\\": \\"$XRAY_CLIENT_SECRET\\"}" \
+                    https://xray.cloud.getxray.app/api/v2/authenticate | tr -d '"')
+
+                    curl -X POST \
+                    -H "Content-Type: text/xml" \
+                    -H "Authorization: Bearer $XRAY_TOKEN" \
+                    --data @pytest-results.xml \
+                    "https://xray.cloud.getxray.app/api/v2/import/execution/junit?projectKey=DSO"
+                    '''
+                }
             }
         }
 
