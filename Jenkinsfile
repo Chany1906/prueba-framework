@@ -61,16 +61,33 @@ pipeline {
         stage('OWASP ZAP Scan') {
             steps {
                 sh '''
-                    mkdir -p reports/zap
-                    chmod -R 777 reports/zap
+                mkdir -p reports/zap
+                chmod -R 777 reports/zap
 
-                    docker run --rm \
-                    -u root \
-                    -v $(pwd)/reports/zap:/zap/wrk \
-                    ghcr.io/zaproxy/zaproxy:stable zap-baseline.py \
-                    -t https://otransfer.chimera.pe \
-                    -r zap-report.html || true
+                docker run --rm \
+                -u root \
+                -v $(pwd)/reports/zap:/zap/wrk \
+                ghcr.io/zaproxy/zaproxy:stable zap-baseline.py \
+                -t https://otransfer.chimera.pe \
+                -r zap-report.html || true
                 '''
+            }
+        }
+
+        stage('Test Jira Connection') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'jira-creds',
+                    usernameVariable: 'JIRA_USER',
+                    passwordVariable: 'JIRA_TOKEN'
+                )]) {
+                    sh '''
+                    curl -u $JIRA_USER:$JIRA_TOKEN \
+                    -X GET \
+                    -H "Content-Type: application/json" \
+                    https://sitio-pruebas.atlassian.net/rest/api/3/project
+                    '''
+                }
             }
         }
     }
