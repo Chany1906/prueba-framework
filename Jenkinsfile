@@ -41,8 +41,15 @@ pipeline {
                 . venv/bin/activate
                 pip install --upgrade pip
                 pip install -r requirements.txt
-                pytest -v
+                pip install allure-pytest
+                pytest --alluredir=allure-results
                 '''
+            }
+        }
+
+        stage('Allure Report') {
+            steps {
+                allure includeProperties: false, jdk: '', results: [[path: 'tests/selenium/allure-results']]
             }
         }
     }
