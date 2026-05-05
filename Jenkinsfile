@@ -50,7 +50,7 @@ pipeline {
         stage('Allure Report') {
             steps {
                 allure([
-                    commandline: 'allure',
+                    commandline: 'Allure',
                     includeProperties: false,
                     results: [[path: 'tests/selenium/allure-results']]
                 ])
