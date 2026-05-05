@@ -62,8 +62,10 @@ pipeline {
             steps {
                 sh '''
                     mkdir -p reports/zap
+                    chmod -R 777 reports/zap
 
                     docker run --rm \
+                    -u root \
                     -v $(pwd)/reports/zap:/zap/wrk \
                     ghcr.io/zaproxy/zaproxy:stable zap-baseline.py \
                     -t https://otransfer.chimera.pe \
