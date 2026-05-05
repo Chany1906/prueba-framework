@@ -77,7 +77,7 @@ pipeline {
                     -H "Content-Type: text/xml" \
                     -H "Authorization: Bearer $XRAY_TOKEN" \
                     --data @pytest-results.xml \
-                    "https://xray.cloud.getxray.app/api/v2/import/execution/junit?testExecKey=DSO-7"
+                    "https://xray.cloud.getxray.app/api/v2/import/execution/junit?testExecKey=DSO-9"
                     '''
                 }
             }
