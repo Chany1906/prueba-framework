@@ -57,7 +57,7 @@ pipeline {
                 ])
             }
         }
-
+/*
         stage('Import Results to Xray') {
             steps {
                 withCredentials([usernamePassword(
@@ -96,7 +96,7 @@ EOF
                 }
             }
         }
-
+*/
         stage('OWASP ZAP Scan') {
             steps {
                 sh '''
