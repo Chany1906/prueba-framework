@@ -49,7 +49,11 @@ pipeline {
 
         stage('Allure Report') {
             steps {
-                allure includeProperties: false, jdk: '', results: [[path: 'tests/selenium/allure-results']]
+                allure([
+                    commandline: 'allure',
+                    includeProperties: false,
+                    results: [[path: 'tests/selenium/allure-results']]
+                ])
             }
         }
     }
