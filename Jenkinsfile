@@ -18,7 +18,8 @@ pipeline {
                         sh """
                         ${scannerHome}/bin/sonar-scanner \
                         -Dsonar.projectKey=otransfer-frontend \
-                        -Dsonar.sources=.
+                        -Dsonar.sources=. \
+                        -Dsonar.exclusions=**/venv/**,**/.scannerwork/**,**/allure-report/**,**/allure-results/**,**/reports/**,**/__pycache__/**
                         """
                     }
                 }
