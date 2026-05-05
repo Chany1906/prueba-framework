@@ -56,5 +56,19 @@ pipeline {
                 ])
             }
         }
+
+        stage('OWASP ZAP Scan') {
+            steps {
+                sh '''
+                    mkdir -p reports/zap
+
+                    docker run --rm \
+                    -v $(pwd)/reports/zap:/zap/wrk \
+                    ghcr.io/zaproxy/zaproxy:stable zap-baseline.py \
+                    -t https://otransfer.chimera.pe \
+                    -r zap-report.html || true
+                '''
+            }
+        }
     }
 }
