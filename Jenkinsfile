@@ -73,11 +73,25 @@ pipeline {
                     -d "{\\"client_id\\": \\"$XRAY_CLIENT_ID\\", \\"client_secret\\": \\"$XRAY_CLIENT_SECRET\\"}" \
                     https://xray.cloud.getxray.app/api/v2/authenticate | tr -d '"')
 
+                    cat > testexec_info.json <<EOF
+{
+  "fields": {
+    "project": {
+      "key": "DSO"
+    },
+    "summary": "Automated Selenium Execution - Jenkins",
+    "issuetype": {
+      "name": "Test Execution"
+    }
+  }
+}
+EOF
+
                     curl -X POST \
-                    -H "Content-Type: text/xml" \
                     -H "Authorization: Bearer $XRAY_TOKEN" \
-                    --data @pytest-results.xml \
-                    "https://xray.cloud.getxray.app/api/v2/import/execution/junit?testExecKey=DSO-9"
+                    -F "results=@pytest-results.xml" \
+                    -F "info=@testexec_info.json" \
+                    "https://xray.cloud.getxray.app/api/v2/import/execution/junit/multipart"
                     '''
                 }
             }
