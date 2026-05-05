@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    tools {
-        sonarRunner 'sonar-scanner'
-    }
-
     stages {
         stage('Checkout') {
             steps {
@@ -15,12 +11,16 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('sonar-local') {
-                    bat '''
-                    sonar-scanner ^
-                    -Dsonar.projectKey=otransfer-frontend ^
-                    -Dsonar.sources=.
-                    '''
+                script {
+                    def scannerHome = tool 'sonar-scanner'
+
+                    withSonarQubeEnv('sonar-local') {
+                        bat """
+                        "${scannerHome}\\bin\\sonar-scanner.bat" ^
+                        -Dsonar.projectKey=otransfer-frontend ^
+                        -Dsonar.sources=.
+                        """
+                    }
                 }
             }
         }
